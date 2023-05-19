@@ -3,6 +3,8 @@ const aliceTumbling = [
   { transform: 'rotate(360deg) scale(0)' }
 ];
 
+
+
 const aliceTiming = {
   duration: 2000,
   iterations: 1,
@@ -13,40 +15,27 @@ const alice1 = document.querySelector("#alice1");
 const alice2 = document.querySelector("#alice2");
 const alice3 = document.querySelector("#alice3");
 
-function aliceAnimate1(){
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('Async Operation 1 completed');
-      alice1.animate(aliceTumbling, aliceTiming);
-      resolve();
-    }, 2000);
+function animateAsync(element, animation, timing) {
+  return new Promise((resolve) => {
+    element.animate(animation, timing).addEventListener('finish', resolve);
+    aliceTiming.iterations++;
+    aliceTiming.duration += 500;
   });
 }
 
-function aliceAnimate2() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('Async Operation 2 completed');
-      alice2.animate(aliceTumbling, aliceTiming);
-      resolve();
-    }, 1500);
-  });
+async function sequenceAnimations() {
+  console.log('Starting animation sequence');
+  
+  await animateAsync(alice1, aliceTumbling, aliceTiming);
+  console.log('Animation 1 completed');
+  
+  await animateAsync(alice2, aliceTumbling, aliceTiming);
+  console.log('Animation 2 completed');
+  
+  await animateAsync(alice3, aliceTumbling, aliceTiming);
+  console.log('Animation 3 completed');
+  
+  console.log('Animation sequence finished');
 }
 
-function aliceAnimate3() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('Async Operation 2 completed');
-      alice3.animate(aliceTumbling, aliceTiming);
-      resolve();
-    }, 1000);
-  });
-}
-aliceAnimate1()
-.then(() => aliceAnimate2())
-.then(() => aliceAnimate3())
-.then(() => {console.log('All animations completed');
-})
-.catch((error) => {
-  console.error('An error occurred:', error);
-});
+sequenceAnimations();
